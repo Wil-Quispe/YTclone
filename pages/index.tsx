@@ -32,7 +32,7 @@ const IndexPage: React.FC = (): JSX.Element => {
 
   return (
     <>
-      <h1>hola bros YTclone</h1>
+      <h1>hola bros YTclone hola comunidad de WilCodee</h1>
 
       <form onSubmit={search}>
         <label>
