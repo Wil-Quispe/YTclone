@@ -10,16 +10,16 @@ const style: React.CSSProperties = { padding: '1em', textAlign: 'center' }
 
 const IndexPage: React.FC = (): JSX.Element => {
   const [doFetch, PlayList] = useFetch()
-  const [Videos, setVideos] = useState()
+  const [Videos, setVideos] = useState<any>()
 
   const [Search, setSearch] = useState<SearchInterface>({
-    search: '',
+    search: 'none',
     maxResults: 0,
   })
 
   const search = async (e: any): Promise<void> => {
     e.preventDefault()
-    const result = await doFetch(Search)
+    const result: any = await doFetch(Search)
     setVideos(result.items)
   }
 

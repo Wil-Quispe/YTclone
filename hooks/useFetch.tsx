@@ -6,7 +6,7 @@ interface Search {
 }
 
 const Fetch = () => {
-  const [PlayList, setPlayList] = useState()
+  const [PlayList, setPlayList] = useState<any>()
   useEffect(() => {
     try {
       const getPlayList = async (): Promise<void> => {
