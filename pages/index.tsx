@@ -1,6 +1,6 @@
 import { ChangeEvent, useState } from 'react'
 import useFetch from '../hooks/useFetch'
-
+import Head from 'next/head'
 interface SearchInterface {
   search: string
   maxResults?: number
@@ -32,6 +32,10 @@ const IndexPage: React.FC = (): JSX.Element => {
 
   return (
     <>
+      <Head>
+        <title>YT clone</title>
+        <link rel='icon' href='/youtube.svg' />
+      </Head>
       <h1>hola bros YTclone hola comunidad de WilCodee</h1>
 
       <form onSubmit={search}>
