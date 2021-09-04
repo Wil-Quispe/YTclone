@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { SearchVideoInterface } from '../Interfaces'
 
 interface Search {
   search: string
@@ -6,37 +6,23 @@ interface Search {
 }
 
 const Fetch = () => {
-  const [PlayList, setPlayList] = useState<any>()
-  useEffect(() => {
-    try {
-      const getPlayList = async (): Promise<void> => {
-        const res = await fetch(
-          'https://www.googleapis.com/youtube/v3/playlists?part=snippet&key=AIzaSyCmG8jzvCF6_3kPYRcGzSF9b2L-LF6j68s&channelId=UC2xLpPmnDyAxvHlOTOdt_Ug&maxResults=10'
-        )
-        const playlists = await res.json()
-        setPlayList(playlists.items)
-      }
-      getPlayList()
-    } catch (e) {
-      return e
-    }
-  }, [])
-
-  const doFetch = async ({ search, maxResults }: Search): Promise<void> => {
+  const doFetch = async ({
+    search,
+    maxResults,
+  }: Search): Promise<SearchVideoInterface> => {
     try {
       const res = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&key=AIzaSyCmG8jzvCF6_3kPYRcGzSF9b2L-LF6j68s&maxResults=${
           maxResults || 10
-        }&type=video&q=${search}`
+        }&type=video&q=${search}`,
       )
-      const data = await res.json()
-      return data
+      return await res.json()
     } catch (e) {
-      return e
+      throw new Error(`some error ${e}`)
     }
   }
 
-  return [doFetch, PlayList]
+  return [doFetch]
 }
 
 export default Fetch

@@ -1,25 +1,27 @@
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, CSSProperties, FormEvent, useState } from 'react'
 import useFetch from '../hooks/useFetch'
 import Head from 'next/head'
+import { GetStaticProps } from 'next'
+import { Item, ItemSearchVideo, PlaylistInterface } from './../Interfaces/index'
 interface SearchInterface {
   search: string
   maxResults?: number
 }
 
-const style: React.CSSProperties = { padding: '1em', textAlign: 'center' }
+const style: CSSProperties = { padding: '1em', textAlign: 'center' }
 
-const IndexPage: React.FC = (): JSX.Element => {
-  const [doFetch, PlayList] = useFetch()
-  const [Videos, setVideos] = useState<any>()
+const IndexPage = ({ PlayList }: { PlayList: PlaylistInterface }) => {
+  const [doFetch] = useFetch()
+  const [Videos, setVideos] = useState<ItemSearchVideo[]>()
 
   const [Search, setSearch] = useState<SearchInterface>({
     search: 'none',
     maxResults: 0,
   })
 
-  const search = async (e: any): Promise<void> => {
+  const search = async (e: FormEvent): Promise<void> => {
     e.preventDefault()
-    const result: any = await doFetch(Search)
+    const result = await doFetch(Search)
     setVideos(result.items)
   }
 
@@ -28,44 +30,42 @@ const IndexPage: React.FC = (): JSX.Element => {
     setSearch({ ...Search, [name]: value })
   }
 
-  // yarn create next-app --example with-typescript
-
   return (
     <>
       <Head>
         <title>YT clone</title>
-        <link rel='icon' href='/youtube.svg' />
+        <link rel="icon" href="/youtube.svg" />
       </Head>
       <h1>hola bros YTclone hola comunidad de WilCodee</h1>
 
       <form onSubmit={search}>
         <label>
           <input
-            type='text'
-            placeholder='buscar'
-            name='search'
+            type="text"
+            placeholder="buscar"
+            name="search"
             onChange={handleChange}
           />
         </label>
         <label>
           <input
-            type='number'
-            placeholder='max resultado'
-            name='maxResults'
+            type="number"
+            placeholder="max resultado"
+            name="maxResults"
             onChange={handleChange}
           />
         </label>
-        <button type='submit'>Buscar</button>
+        <button type="submit">Buscar</button>
       </form>
 
       <div style={{ ...style }}>
         {Videos &&
-          Videos.map((v: any, i: number) => (
+          Videos.map((v: ItemSearchVideo) => (
             <iframe
               style={{ padding: '.8em .5em' }}
-              key={i}
+              key={v.id.videoId}
               src={`https://www.youtube.com/embed/${v.id.videoId}`}
-              frameBorder='0'
+              frameBorder="0"
               allowFullScreen
             ></iframe>
           ))}
@@ -73,12 +73,12 @@ const IndexPage: React.FC = (): JSX.Element => {
 
       <div style={{ ...style }}>
         {PlayList ? (
-          PlayList.map((p: any, i: number) => (
+          PlayList.items.map((p: Item) => (
             <iframe
               style={{ padding: '.8em .5em' }}
-              key={i}
+              key={p.id}
               src={`https://www.youtube.com/embed/videoseries?list=${p.id}`}
-              frameBorder='0'
+              frameBorder="0"
               allowFullScreen
             ></iframe>
           ))
@@ -88,6 +88,17 @@ const IndexPage: React.FC = (): JSX.Element => {
       </div>
     </>
   )
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await fetch(
+    'https://www.googleapis.com/youtube/v3/playlists?part=snippet&key=AIzaSyCmG8jzvCF6_3kPYRcGzSF9b2L-LF6j68s&channelId=UC2xLpPmnDyAxvHlOTOdt_Ug&maxResults=10',
+  )
+  const PlayList = await res.json()
+
+  return {
+    props: { PlayList },
+  }
 }
 
 export default IndexPage
